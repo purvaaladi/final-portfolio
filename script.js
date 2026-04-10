@@ -1,11 +1,11 @@
-// Smooth Scroll
+// 🌟 SMOOTH SCROLL
 function scrollToSection(id) {
     document.getElementById(id).scrollIntoView({
         behavior: "smooth"
     });
 }
 
-// 🌌 Star Background Animation
+// 🌌 STAR BACKGROUND
 const canvas = document.getElementById("stars");
 const ctx = canvas.getContext("2d");
 
@@ -18,39 +18,58 @@ for (let i = 0; i < 120; i++) {
     stars.push({
         x: Math.random() * canvas.width,
         y: Math.random() * canvas.height,
-        r: Math.random() * 2,
-        dx: (Math.random() - 0.5) * 0.5,
-        dy: (Math.random() - 0.5) * 0.5
+        size: Math.random() * 2,
+        speed: Math.random() * 0.5
     });
 }
 
-function animate() {
+function drawStars() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-    stars.forEach((s, i) => {
-        ctx.beginPath();
-        ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-        ctx.fillStyle = "white";
-        ctx.fill();
+    ctx.fillStyle = "white";
 
-        s.x += s.dx;
-        s.y += s.dy;
+    stars.forEach(star => {
+        star.y += star.speed;
 
-        for (let j = i + 1; j < stars.length; j++) {
-            let s2 = stars[j];
-            let dist = Math.hypot(s.x - s2.x, s.y - s2.y);
-
-            if (dist < 100) {
-                ctx.beginPath();
-                ctx.moveTo(s.x, s.y);
-                ctx.lineTo(s2.x, s2.y);
-                ctx.strokeStyle = "rgba(255,255,255,0.1)";
-                ctx.stroke();
-            }
+        if (star.y > canvas.height) {
+            star.y = 0;
+            star.x = Math.random() * canvas.width;
         }
+
+        ctx.beginPath();
+        ctx.arc(star.x, star.y, star.size, 0, Math.PI * 2);
+        ctx.fill();
     });
 
-    requestAnimationFrame(animate);
+    requestAnimationFrame(drawStars);
 }
 
-animate();
+drawStars();
+
+// 🌠 RESIZE FIX
+window.addEventListener("resize", () => {
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+});
+
+// ✨ FADE-IN ANIMATION ON SCROLL
+const sections = document.querySelectorAll(".section");
+
+window.addEventListener("scroll", () => {
+    sections.forEach(sec => {
+        const top = sec.getBoundingClientRect().top;
+        const trigger = window.innerHeight * 0.8;
+
+        if (top < trigger) {
+            sec.style.opacity = 1;
+            sec.style.transform = "translateY(0)";
+        }
+    });
+});
+
+// INITIAL STYLE
+sections.forEach(sec => {
+    sec.style.opacity = 0;
+    sec.style.transform = "translateY(50px)";
+    sec.style.transition = "0.6s";
+});
